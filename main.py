@@ -1,5 +1,3 @@
-# Simple PyQT serial terminal v0.09 from iosoft.blog
-
 from PyQt5 import QtGui, QtCore, Qt, QtWidgets, QtSerialPort
 from PyQt5.QtGui import QIntValidator, QIcon
 from PyQt5.QtWidgets import *
@@ -281,12 +279,6 @@ class MyWidget(QWidget):
             self.serth.running = False
             self.serth.wait()
             self.toggleUI(True)
-
-    def write(self, text):  # Handle sys.stdout.write: update display
-        self.text_update.emit(text)  # Send signal to synchronise call with main thread
-
-    def flush(self):  # Handle sys.stdout.flush: do nothing
-        pass
 
     def update_state(self, state):
         if state == "Active":
