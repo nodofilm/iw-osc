@@ -15,10 +15,28 @@ Because OSC is an open standard, there are many cross-platform plug-in's that en
 |Unreal Engine|[UE4-OSC](https://github.com/monsieurgustav/UE4-OSC)|
 |Unity|[UnityOSC](https://github.com/thomasfredericks/UnityOSC)|
 
+### Download Release Versions of App
+|Release|Mac   | Windows|
+|-------|------|-------|
+|V1     |[Download](https://www.dropbox.com/s/h88o6uztjt2qjlg/IW-OSC-V1.zip?dl=0)|Coming Soon...|
+
 ### GUI
 
+This app comes with a simple GUI that allows you to control:
 
-### Releases
+* Enable/Disable Pan/Tilt/Roll Channels
+* Set the format of Pan/Tilt/Roll Data to:
+    * Raw Integers - The Raw Encoder Data
+    * Cumulative Radians - The wheel data in radians that count rotations
+    * Finite Radians - The wheel data in radians from -1.0f to 1.0f
+* Enable/Disable Focus/Iris/Zoom Channels
+* Set the format of Focus/Iris/Zoom
+    * Raw Integers - From 0 to 32767
+    * Float - From 0.0f to 1.0f
+* Set OSC IP Address/Port
+* Set Incoming UART Port
+
+![GUI Example](https://images.squarespace-cdn.com/content/v1/5c9296ea70468017a9b29717/1578958714682-0D1P19JSQ6WK4JEAH76G/ke17ZwdGBToddI8pDm48kIfmEvYrxwLn8L2GdmCsAQFZw-zPPgdn4jUwVcJE1ZvWEtT5uBSRWt4vQZAgTJucoTqqXjS3CfNDSuuf31e0tVHCrK-xG8qM-tDqbIhh2zI3XieVLy7NcbluJ4JTdjCyRpu3E9Ef3XsXP1C_826c-iU/IW-OSC-Screen.png?format=500w)
 
 
 ## Development
