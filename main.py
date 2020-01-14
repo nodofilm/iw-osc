@@ -1,6 +1,7 @@
 from PyQt5 import QtGui, QtCore, Qt, QtWidgets, QtSerialPort
 from PyQt5.QtGui import QIntValidator, QIcon
 from PyQt5.QtWidgets import *
+import math
 
 
 try:
@@ -421,25 +422,25 @@ class SerialThread(QtCore.QThread):
                         self.ptrfiz_data_processed[1] = self.ptrfiz_data_raw[1] #raw
                         self.ptrfiz_data_processed[2] = self.ptrfiz_data_raw[2] #raw
                     elif self.ptr_format == "Cumulative Radians":
-                        self.ptrfiz_data_processed[0] = (self.ptrfiz_data_raw[0] / 163840)
-                        self.ptrfiz_data_processed[1] = (self.ptrfiz_data_raw[1] / 163840)
-                        self.ptrfiz_data_processed[2] = (self.ptrfiz_data_raw[2] / 163840)
+                        self.ptrfiz_data_processed[0] = math.radians((self.ptrfiz_data_raw[0] / (327680 / 360)))
+                        self.ptrfiz_data_processed[1] = math.radians((self.ptrfiz_data_raw[1] / (327680 / 360)))
+                        self.ptrfiz_data_processed[2] = math.radians((self.ptrfiz_data_raw[2] / (327680 / 360)))
                     elif self.ptr_format == "Finite Radians":
-                        self.ptrfiz_data_processed[0] = (self.ptrfiz_data_raw[0] / 163840)
-                        self.ptrfiz_data_processed[1] = (self.ptrfiz_data_raw[1] / 163840)
-                        self.ptrfiz_data_processed[2] = (self.ptrfiz_data_raw[2] / 163840)
-                        while self.ptrfiz_data_processed[0] > 1:
-                            self.ptrfiz_data_processed[0] = self.ptrfiz_data_processed[0] - 2
-                        while self.ptrfiz_data_processed[0] <= -1:
-                            self.ptrfiz_data_processed[0] = self.ptrfiz_data_processed[0] + 2
-                        while self.ptrfiz_data_processed[1] > 1:
-                            self.ptrfiz_data_processed[1] = self.ptrfiz_data_processed[1] - 2
-                        while self.ptrfiz_data_processed[1] <= -1:
-                            self.ptrfiz_data_processed[1] = self.ptrfiz_data_processed[1] + 2
-                        while self.ptrfiz_data_processed[2] > 1:
-                            self.ptrfiz_data_processed[2] = self.ptrfiz_data_processed[0] - 2
-                        while self.ptrfiz_data_processed[2] <= -1:
-                            self.ptrfiz_data_processed[2] = self.ptrfiz_data_processed[0] + 2
+                        self.ptrfiz_data_processed[0] = math.radians((self.ptrfiz_data_raw[0] / (327680 / 360)))
+                        self.ptrfiz_data_processed[1] = math.radians((self.ptrfiz_data_raw[1] / (327680 / 360)))
+                        self.ptrfiz_data_processed[2] = math.radians((self.ptrfiz_data_raw[2] / (327680 / 360)))
+                        while self.ptrfiz_data_processed[0] > math.pi:
+                            self.ptrfiz_data_processed[0] = self.ptrfiz_data_processed[0] - 2 * math.pi
+                        while self.ptrfiz_data_processed[0] <= -math.pi:
+                            self.ptrfiz_data_processed[0] = self.ptrfiz_data_processed[0] + 2 * math.pi
+                        while self.ptrfiz_data_processed[1] > math.pi:
+                            self.ptrfiz_data_processed[1] = self.ptrfiz_data_processed[1] - 2 * math.pi
+                        while self.ptrfiz_data_processed[1] <= -math.pi:
+                            self.ptrfiz_data_processed[1] = self.ptrfiz_data_processed[1] + 2 * math.pi
+                        while self.ptrfiz_data_processed[2] > math.pi:
+                            self.ptrfiz_data_processed[2] = self.ptrfiz_data_processed[0] - 2 * math.pi
+                        while self.ptrfiz_data_processed[2] <= -math.pi:
+                            self.ptrfiz_data_processed[2] = self.ptrfiz_data_processed[0] + 2 * math.pi
                     #process FIZ data
                     if self.fiz_format == "Raw Integers":
                         self.ptrfiz_data_processed[3] = self.ptrfiz_data_raw[3] #raw
