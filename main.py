@@ -396,7 +396,7 @@ class SerialThread(QtCore.QThread):
         while self.running:
             self.ptrfiz_new = False
             try:
-                s = self.ser.read_until(b';;;')         #read data from port
+                s = self.ser.read_until(b';!;')         #read data from port
             except serial.SerialException as e:
                 print("Serial:Failure")
                 self.running_state.emit("Serial:Failure")
