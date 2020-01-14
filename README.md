@@ -18,7 +18,7 @@ Because OSC is an open standard, there are many cross-platform plug-in's that en
 ### Download Release Versions of App
 |Release|Mac   | Windows|
 |-------|------|-------|
-|V1     |[Download](https://www.dropbox.com/s/h88o6uztjt2qjlg/IW-OSC-V1.zip?dl=0)|Coming Soon...|
+|V1     |[Download](https://www.dropbox.com/s/yne1zlln40gbpbe/IW-OSC-V1.zip?dl=0)|Coming Soon...|
 
 ### GUI
 
@@ -26,7 +26,7 @@ This app comes with a simple GUI that allows you to control:
 
 * Enable/Disable Pan/Tilt/Roll Channels
 * Set the format of Pan/Tilt/Roll Data to:
-    * Raw Integers - The Raw Encoder Data
+    * Raw Integers - The Raw Encoder Data0
     * Cumulative Radians - The wheel data in radians that count rotations
     * Finite Radians - The wheel data in radians from -1.0f to 1.0f
 * Enable/Disable Focus/Iris/Zoom Channels
