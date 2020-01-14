@@ -11,6 +11,7 @@ Because OSC is an open standard, there are many cross-platform plug-in's that en
 
 |Platform|Plugin|
 |--------|------|
+|Cinema4D|[fOSC](https://github.com/fillmember/fOSC)|
 |Cinema4D|[GripTools](https://www.griptools.io/io_osc.php)|
 |Unreal Engine|[UE4-OSC](https://github.com/monsieurgustav/UE4-OSC)|
 |Unity|[UnityOSC](https://github.com/thomasfredericks/UnityOSC)|
