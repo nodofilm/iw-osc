@@ -365,7 +365,10 @@ class SerialThread(QtCore.QThread):
     def __init__(self, serial_port, serial_baud, osc_ip, osc_port, ptrfiz_labels, ptrfiz_enables, ptr_format, fiz_format):  # Initialise with serial port details
         QtCore.QThread.__init__(self)
         self.serial_port, self.serial_baud, self.osc_ip, self.osc_port, self.ptrfiz_labels, self.ptrfiz_enables, self.ptr_format, self.fiz_format = serial_port, serial_baud, osc_ip, osc_port, ptrfiz_labels, ptrfiz_enables, ptr_format, fiz_format
-        self.serial_port = "/dev/" + self.serial_port
+        if platform.system() == "Windows":
+            self.serial_port = self.serial_port
+        else:
+            self.serial_port = "/dev/" + self.serial_port
         self.running = True
         #these arrays hold the main data from the wheels
         self.ptrfiz_data_labels = ["pan", "tilt", "roll", "focus", "iris", "zoom"] #this is not used here, but helpful to remember
@@ -403,19 +406,19 @@ class SerialThread(QtCore.QThread):
                 self.running_state.emit("Serial:Failure")
                 self.running = False
             if s:                                   #if data
-                fmt = '>cccccBBiiiihhhhbbbbbbbbbbbbbbBBBccc'    #this is the format of the packet data
-                if len(s) == struct.calcsize(fmt):              #compare structure to length
-                    self.data = list(struct.unpack(fmt, s))          #unpack
-                    #the data is not parsed and ready to remap
-                    self.ptrfiz_new = True #mark new data
-                    self.ptrfiz_data_raw[0] = self.data[7] #pan
-                    self.ptrfiz_data_raw[1] = self.data[8] #tilt
-                    self.ptrfiz_data_raw[2] = self.data[9] #roll
-                    self.ptrfiz_data_raw[3] = self.data[11] #focus
-                    self.ptrfiz_data_raw[4] = self.data[12] #iris
-                    self.ptrfiz_data_raw[5] = self.data[13] #zoom
-                    self.data[29] = self.data[29]-128         #special: modify rssi data for formatting
-                    self.data[30] = self.data[30]-128         #special: modify snr data for formatting
+                fmt = '>cccccBBiiiiihhhBBBBbbbbbbbbbbbbbbBBBBccc'  # this is the format of the packet data
+                if len(s) == struct.calcsize(fmt):  # compare structure to length
+                    self.data = list(struct.unpack(fmt, s))  # unpack
+                    # the data is not parsed and ready to remap
+                    self.ptrfiz_new = True  # mark new data
+                    self.ptrfiz_data_raw[0] = self.data[7]  # pan
+                    self.ptrfiz_data_raw[1] = self.data[8]  # tilt
+                    self.ptrfiz_data_raw[2] = self.data[9]  # roll
+                    self.ptrfiz_data_raw[3] = self.data[12]  # focus
+                    self.ptrfiz_data_raw[4] = self.data[13]  # iris
+                    self.ptrfiz_data_raw[5] = self.data[14]  # zoom
+                    self.data[29] = self.data[29] - 128  # special: modify rssi data for formatting
+                    self.data[30] = self.data[30] - 128  # special: modify snr data for formatting
                     #process the PTR data
                     if self.ptr_format == "Raw Integers":
                         self.ptrfiz_data_processed[0] = self.ptrfiz_data_raw[0] #raw
