@@ -14,6 +14,10 @@ from pythonosc import udp_client
 import socket
 import os, sys, platform
 
+if platform.system() == "Windows":
+    QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True) #enable highdpi scaling
+    QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True) #use highdpi icons
+
 #https://blog.aaronhktan.com/posts/2018/05/14/pyqt5-pyinstaller-executable
 def resource_path(relative_path):
     if hasattr(sys, '_MEIPASS'):
@@ -33,6 +37,8 @@ class Dialog(QtWidgets.QDialog):
     def __init__(self, parent=None):
         super(Dialog, self).__init__(parent)
         self.portname_comboBox = QtWidgets.QComboBox()
+        self.setWindowTitle("Port")
+        self.setWindowFlags(QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         # self.baudrate_comboBox = QtWidgets.QComboBox()
 
         for info in QtSerialPort.QSerialPortInfo.availablePorts():
