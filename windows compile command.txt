@@ -1,0 +1,1 @@
+C:/dev/iw-osc/venv/Scripts/pyinstaller.exe -w --clean main-windows.spec main.py

@@ -48,6 +48,8 @@ class Dialog(QtWidgets.QDialog):
     def __init__(self, parent=None):
         super(Dialog, self).__init__(parent)
         self.portname_comboBox = QtWidgets.QComboBox()
+        self.setWindowTitle("Port")
+        self.setWindowFlags(QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         # self.baudrate_comboBox = QtWidgets.QComboBox()
 
         for info in QtSerialPort.QSerialPortInfo.availablePorts():
