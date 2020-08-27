@@ -14,6 +14,21 @@ from pythonosc import udp_client
 import socket
 import os, sys, platform
 
+#Printing to self
+#https://stackoverflow.com/questions/8356336/how-to-capture-output-of-pythons-interpreter-and-show-in-a-text-widget
+from PyQt5 import QtCore
+
+class EmittingStream(QtCore.QObject):
+
+    textWritten = QtCore.pyqtSignal(str)
+
+    def write(self, text):
+        self.textWritten.emit(str(text))
+
+if platform.system() == "Windows":
+    QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True) #enable highdpi scaling
+    QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True) #use highdpi icons
+
 #https://blog.aaronhktan.com/posts/2018/05/14/pyqt5-pyinstaller-executable
 def resource_path(relative_path):
     if hasattr(sys, '_MEIPASS'):
@@ -62,7 +77,18 @@ class MyWidget(QWidget):
 
     def __init__(self, *args):
         QWidget.__init__(self, *args)
+        sys.stdout = EmittingStream(textWritten=self.normalOutputWritten)
+
         layout = QVBoxLayout()
+
+        menubar = QMenuBar()
+        layout.addWidget(menubar)
+        self.logging = QAction("Show/Hide Log", self)
+        self.logging.setShortcut("Ctrl+L")
+        self.logging.triggered.connect(self.show_hide_logging)
+        advancedMenu = menubar.addMenu("Advanced")
+        advancedMenu.addAction(self.logging)
+
 
         ip_box = QFormLayout()
 
@@ -239,8 +265,31 @@ class MyWidget(QWidget):
         layout.addWidget(self.stop_button)
         layout.addLayout(io_box)
 
+        self.log = QTextEdit()
+        layout.addWidget(self.log)
+        self.log.hide()
+
         self.setLayout(layout)
         self.resize(WIN_WIDTH, WIN_HEIGHT)  # Set window size
+
+        self.log_toggled = False
+
+    def show_hide_logging(self):
+        if self.log_toggled:
+            self.log_toggled = False
+            self.log.hide()
+        else:
+            self.log_toggled = True
+            self.log.show()
+
+    def normalOutputWritten(self, text):
+        """Append text to the QTextEdit."""
+        # Maybe QTextEdit.append() works as well, but this is how I do it:
+        cursor = self.log.textCursor()
+        cursor.movePosition(QtGui.QTextCursor.End)
+        cursor.insertText(text)
+        self.log.setTextCursor(cursor)
+        self.log.ensureCursorVisible()
 
     @QtCore.pyqtSlot()
     def open_dialog(self):
@@ -406,7 +455,7 @@ class SerialThread(QtCore.QThread):
                 self.running_state.emit("Serial:Failure")
                 self.running = False
             if s:                                   #if data
-                fmt = '>cccccBBiiiiihhhBBBBbbbbbbbbbbbbbbBBBBccc'  # this is the format of the packet data
+                fmt = '>cccccBBiiiiiHHHBBBBbbbbbbbbbbbbbbBBBBccc'  # this is the format of the packet data
                 if len(s) == struct.calcsize(fmt):  # compare structure to length
                     self.data = list(struct.unpack(fmt, s))  # unpack
                     # the data is not parsed and ready to remap
@@ -425,13 +474,13 @@ class SerialThread(QtCore.QThread):
                         self.ptrfiz_data_processed[1] = self.ptrfiz_data_raw[1] #raw
                         self.ptrfiz_data_processed[2] = self.ptrfiz_data_raw[2] #raw
                     elif self.ptr_format == "Cumulative Radians":
-                        self.ptrfiz_data_processed[0] = math.radians((self.ptrfiz_data_raw[0] / (327680 / 360)))
-                        self.ptrfiz_data_processed[1] = math.radians((self.ptrfiz_data_raw[1] / (327680 / 360)))
-                        self.ptrfiz_data_processed[2] = math.radians((self.ptrfiz_data_raw[2] / (327680 / 360)))
+                        self.ptrfiz_data_processed[0] = math.radians((self.ptrfiz_data_raw[0] / 1000))
+                        self.ptrfiz_data_processed[1] = math.radians((self.ptrfiz_data_raw[1] / 1000))
+                        self.ptrfiz_data_processed[2] = math.radians((self.ptrfiz_data_raw[2] / 1000))
                     elif self.ptr_format == "Finite Radians":
-                        self.ptrfiz_data_processed[0] = math.radians((self.ptrfiz_data_raw[0] / (327680 / 360)))
-                        self.ptrfiz_data_processed[1] = math.radians((self.ptrfiz_data_raw[1] / (327680 / 360)))
-                        self.ptrfiz_data_processed[2] = math.radians((self.ptrfiz_data_raw[2] / (327680 / 360)))
+                        self.ptrfiz_data_processed[0] = math.radians((self.ptrfiz_data_raw[0] / 1000))
+                        self.ptrfiz_data_processed[1] = math.radians((self.ptrfiz_data_raw[1] / 1000))
+                        self.ptrfiz_data_processed[2] = math.radians((self.ptrfiz_data_raw[2] / 1000))
                         while self.ptrfiz_data_processed[0] > math.pi:
                             self.ptrfiz_data_processed[0] = self.ptrfiz_data_processed[0] - 2 * math.pi
                         while self.ptrfiz_data_processed[0] <= -math.pi:
@@ -450,9 +499,9 @@ class SerialThread(QtCore.QThread):
                         self.ptrfiz_data_processed[4] = self.ptrfiz_data_raw[4] #raw
                         self.ptrfiz_data_processed[5] = self.ptrfiz_data_raw[5] #raw
                     if self.fiz_format == "Float":
-                        self.ptrfiz_data_processed[3] = (self.ptrfiz_data_raw[3] / 32767) #raw
-                        self.ptrfiz_data_processed[4] = (self.ptrfiz_data_raw[4] / 32767)#raw
-                        self.ptrfiz_data_processed[5] = (self.ptrfiz_data_raw[5] / 32767) #raw
+                        self.ptrfiz_data_processed[3] = (self.ptrfiz_data_raw[3] / 65535) #raw
+                        self.ptrfiz_data_processed[4] = (self.ptrfiz_data_raw[4] / 65535)#raw
+                        self.ptrfiz_data_processed[5] = (self.ptrfiz_data_raw[5] / 65535) #raw
 
                     #output data
                     for num in range(len(self.ptrfiz_data_raw)):
