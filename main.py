@@ -1,3 +1,4 @@
+# /Users/boydhobbs/Dropbox/VSCODE/iw-osc/venv/bin/pyinstaller --onefile --windowed main-apple.spec main.py
 from PyQt5 import QtGui, QtCore, Qt, QtWidgets, QtSerialPort
 from PyQt5.QtGui import QIntValidator, QIcon
 from PyQt5.QtWidgets import *
